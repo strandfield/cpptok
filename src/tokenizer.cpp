@@ -46,23 +46,19 @@ void Tokenizer::tokenize(const char* str, size_t len)
   m_start = 0;
 
   if (state == State::LongComment)
-    output.push_back(readMultiLineComment());
-
-  consumeDiscardable();
+    readMultiLineComment();
 
   while (!atEnd())
-    output.push_back(read());
+    read();
 }
 
-Token Tokenizer::read()
+void Tokenizer::read()
 {
-  Token result = readToken();
   consumeDiscardable();
-  return result;
-}
 
-Token Tokenizer::readToken()
-{
+  if (atEnd())
+    return;
+
   m_start = pos();
   size_t p = m_start;
 
@@ -81,32 +77,42 @@ Token Tokenizer::readToken()
   case Underscore:
     return readIdentifier();
   case LeftPar:
-    return create(p, 1, TokenType::LeftPar);
+    return write(TokenType::LeftPar);
   case RightPar:
-    return create(p, 1, TokenType::RightPar);
+    return write(TokenType::RightPar);
   case LeftBrace:
-    return create(p, 1, TokenType::LeftBrace);
+    return write(TokenType::LeftBrace);
   case RightBrace:
-    return create(p, 1, TokenType::RightBrace);
+    return write(TokenType::RightBrace);
   case LeftBracket:
-    return create(p, 1, TokenType::LeftBracket);
+    return write(TokenType::LeftBracket);
   case RightBracket:
-    return create(p, 1, TokenType::RightBracket);
+    return write(TokenType::RightBracket);
   case Semicolon:
-    return create(p, 1, TokenType::Semicolon);
+    return write(TokenType::Semicolon);
   case Colon:
-    return readColonOrColonColon(p);
+    return readColonOrColonColon();
   case QuestionMark:
-    return create(p, 1, TokenType::QuestionMark);
+    return write(TokenType::QuestionMark);
   case Comma:
-    return create(p, 1, TokenType::Comma);
+    return write(TokenType::Comma);
   case Dot:
-    return create(p, 1, TokenType::Dot);
+    return write(TokenType::Dot);
   case Punctuator:
-    return readFromPunctuator(p);
+    return readFromPunctuator(c);
   default:
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
   }
+}
+
+void Tokenizer::write(const Token& tok)
+{
+  this->output.push_back(tok);
+}
+
+void Tokenizer::write(TokenType type)
+{
+  write(Token(type, currentText()));
 }
 
 bool Tokenizer::atEnd() const
@@ -148,16 +154,6 @@ void Tokenizer::consumeDiscardable()
 string_view Tokenizer::currentText() const
 {
   return string_view(m_chars + m_start, pos() - m_start);
-}
-
-Token Tokenizer::create(size_t pos, size_t length, TokenType type)
-{
-  return Token{ type, string_view(m_chars + pos, length) };
-}
-
-Token Tokenizer::create(size_t pos, TokenType type)
-{
-  return Token{ type, string_view(m_chars + pos, this->pos() - pos) };
 }
 
 Tokenizer::CharacterType Tokenizer::ctype(char c)
@@ -303,13 +299,13 @@ bool Tokenizer::isDiscardable(char c)
   return ctype(c) == Space || ctype(c) == LineBreak || ctype(c) == CarriageReturn || ctype(c) == Tabulation;
 }
 
-Token Tokenizer::readNumericLiteral()
+void Tokenizer::readNumericLiteral()
 {
   if (atEnd()) {
     if (charAt(m_start) == '0')
-      return create(m_start, 1, TokenType::OctalLiteral);
+      return write(TokenType::OctalLiteral);
     else
-      return create(m_start, 1, TokenType::IntegerLiteral);
+      return write(TokenType::IntegerLiteral);
   }
 
   char c = peekChar();
@@ -327,52 +323,52 @@ Token Tokenizer::readNumericLiteral()
     else if (Tokenizer::isDigit(c))// octal
       return readOctal();
     else // it is zero
-      return create(m_start, TokenType::OctalLiteral);
+      return write(TokenType::OctalLiteral);
   }
 
   return readDecimal();
 }
 
-Token Tokenizer::readHexa()
+void Tokenizer::readHexa()
 {
   const char x = readChar();
   assert(x == 'x');
 
   if (atEnd())  // input ends with '0x' -> error
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
   while (!atEnd() && Tokenizer::isHexa(peekChar()))
     readChar();
 
   if (pos() - m_start == 2) // e.g. 0x+
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
   
-  return create(m_start, TokenType::HexadecimalLiteral);
+  return write(TokenType::HexadecimalLiteral);
 }
 
-Token Tokenizer::readOctal()
+void Tokenizer::readOctal()
 {
   while (!atEnd() && Tokenizer::isOctal(peekChar()))
     readChar();
 
-  return create(m_start, TokenType::OctalLiteral);
+  return write(TokenType::OctalLiteral);
 }
 
-Token Tokenizer::readBinary()
+void Tokenizer::readBinary()
 {
   const char b = readChar();
   assert(b == 'b');
 
   if (atEnd())  // input ends with '0b' -> error
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
   while (!atEnd() && Tokenizer::isBinary(peekChar()))
     readChar();
 
-  return create(m_start, TokenType::BinaryLiteral);
+  return write(TokenType::BinaryLiteral);
 }
 
-Token Tokenizer::readDecimal()
+void Tokenizer::readDecimal()
 {
   // Reading decimal numbers
   // eg. : 25
@@ -386,7 +382,7 @@ Token Tokenizer::readDecimal()
     readChar();
 
   if (atEnd())
-    create(m_start, TokenType::IntegerLiteral);
+    return write(TokenType::IntegerLiteral);
 
   bool is_decimal = false;
 
@@ -399,7 +395,7 @@ Token Tokenizer::readDecimal()
       readChar();
 
     if (atEnd())
-      return create(m_start, TokenType::DecimalLiteral);
+      return write(TokenType::DecimalLiteral);
   }
 
   if (peekChar() == 'e')
@@ -408,20 +404,20 @@ Token Tokenizer::readDecimal()
     is_decimal = true;
 
     if (atEnd())
-      return Token(TokenType::Invalid, currentText());
+      return write(TokenType::Invalid);
 
     if (peekChar() == '+' || peekChar() == '-')
     {
       readChar();
       if (atEnd())
-        return Token(TokenType::Invalid, currentText());
+        return write(TokenType::Invalid);
     }
 
     while (!atEnd() && Tokenizer::isDigit(peekChar()))
       readChar();
 
     if (atEnd())
-      return create(m_start, TokenType::DecimalLiteral);
+      return write(TokenType::DecimalLiteral);
   }
 
 
@@ -433,10 +429,10 @@ Token Tokenizer::readDecimal()
   else
   {
     if (tryReadLiteralSuffix())
-      return create(m_start, TokenType::UserDefinedLiteral);
+      return write(TokenType::UserDefinedLiteral);
   }
 
-  return create(m_start, is_decimal ? TokenType::DecimalLiteral : TokenType::IntegerLiteral);
+  return write(is_decimal ? TokenType::DecimalLiteral : TokenType::IntegerLiteral);
 }
 
 bool Tokenizer::tryReadLiteralSuffix()
@@ -455,12 +451,47 @@ bool Tokenizer::tryReadLiteralSuffix()
   return read;
 }
 
-Token Tokenizer::readIdentifier()
+void Tokenizer::readPreprocessor()
+{
+  consumeDiscardable();
+
+  if (atEnd() || !isIdentifier(peekChar()))
+    return write(TokenType::Invalid);
+
+  while (!atEnd() && isIdentifierOrDigit(peekChar()))
+    readChar();
+
+  write(TokenType::Preproc);
+
+  if (this->output.back().text() == "#include")
+  {
+    consumeDiscardable();
+    m_start = pos();
+
+    if (atEnd() || (peekChar() != '<' && peekChar() != '"'))
+      return;
+
+    char c = readChar();
+    c = c == '<' ? '>' : '"';
+
+    while (!atEnd() && peekChar() != c)
+      readChar();
+
+    if (atEnd())
+      return write(TokenType::Invalid);
+
+    readChar();
+
+    return write(TokenType::Include);
+  }
+}
+
+void Tokenizer::readIdentifier()
 {
   while (!this->atEnd() && (Tokenizer::isLetter(peekChar()) || Tokenizer::isDigit(peekChar()) || peekChar() == '_'))
     readChar();
 
-  return create(m_start, pos() - m_start, identifierType(m_start, pos()));
+  return write(identifierType(m_start, pos()));
 }
 
 
@@ -583,7 +614,7 @@ TokenType Tokenizer::identifierType(size_t begin, size_t end) const
   return TokenType::UserDefinedName;
 }
 
-Token Tokenizer::readStringLiteral()
+void Tokenizer::readStringLiteral()
 {
   while (!atEnd() && peekChar() != '"')
   {
@@ -595,7 +626,7 @@ Token Tokenizer::readStringLiteral()
     }
     else if (peekChar() == '\n')
     {
-      return Token(TokenType::Invalid, currentText());
+      return write(TokenType::Invalid);
     }
     else
     {
@@ -604,64 +635,67 @@ Token Tokenizer::readStringLiteral()
   }
 
   if(atEnd())
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
   assert(peekChar() == '"');
   readChar();
 
   if (tryReadLiteralSuffix())
-    return create(m_start, TokenType::UserDefinedLiteral);
+    return write(TokenType::UserDefinedLiteral);
   
-  return create(m_start, TokenType::StringLiteral);
+  return write(TokenType::StringLiteral);
 }
 
-Token Tokenizer::readCharLiteral()
+void Tokenizer::readCharLiteral()
 {
   if(atEnd())
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
   readChar();
 
   if (atEnd())
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
   if(ctype(readChar()) != SingleQuote)
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
 
-  return create(m_start, TokenType::StringLiteral);
+  return write(TokenType::StringLiteral);
 }
 
-Token Tokenizer::readFromPunctuator(size_t start)
+void Tokenizer::readFromPunctuator(char p)
 {
-  char p = m_chars[pos() - 1]; /// bad, TODO : clean up
   if (p == '/')
   {
     if (atEnd())
-      return create(start, TokenType::Div);
+      return write(TokenType::Div);
     if (peekChar() == '/')
-      return readSingleLineComment(start);
+      return readSingleLineComment();
     else if (peekChar() == '*')
       return readMultiLineComment();
     else
       return readOperator();
+  }
+  else if (p == '#')
+  {
+    return readPreprocessor();
   }
   
   return readOperator();
 }
 
 
-Token Tokenizer::readColonOrColonColon(size_t start)
+void Tokenizer::readColonOrColonColon()
 {
   if (atEnd())
-    return create(start, TokenType::Colon);
+    return write(TokenType::Colon);
 
   if (peekChar() == ':')
   {
     readChar();
-    return create(start, TokenType::ScopeResolution);
+    return write(TokenType::ScopeResolution);
   }
 
-  return create(start, TokenType::Colon);
+  return write(TokenType::Colon);
 }
 
 
@@ -744,12 +778,12 @@ TokenType Tokenizer::getOperator(size_t begin, size_t end) const
   return TokenType::Invalid;
 }
 
-Token Tokenizer::readOperator()
+void Tokenizer::readOperator()
 {
   TokenType op = getOperator(m_start, pos());
 
   if (op == TokenType::Invalid)
-    return Token(TokenType::Invalid, currentText());
+    return write(TokenType::Invalid);
   
   while (!atEnd())
   {
@@ -768,26 +802,26 @@ Token Tokenizer::readOperator()
     }
   }
 
-  return create(m_start, op);
+  return write(op);
 }
 
-Token Tokenizer::readSingleLineComment(size_t start)
+void Tokenizer::readSingleLineComment()
 {
   readChar(); // reads the second '/'
 
   while (!atEnd() && peekChar() != '\n')
     readChar();
 
-  return create(start, TokenType::SingleLineComment);
+  return write(TokenType::SingleLineComment);
 }
 
-Token Tokenizer::createLongComment()
+void Tokenizer::createLongComment()
 {
   state = State::LongComment;
-  return create(m_start, TokenType::MultiLineComment);
+  return write(TokenType::MultiLineComment);
 }
 
-Token Tokenizer::readMultiLineComment()
+void Tokenizer::readMultiLineComment()
 {
   if(state == State::Default)
     readChar(); // reads the '*' after opening '/'
@@ -809,7 +843,7 @@ Token Tokenizer::readMultiLineComment()
 
   readChar(); // reads the closing '/'
   state = State::Default;
-  return create(m_start, TokenType::MultiLineComment);
+  return write(TokenType::MultiLineComment);
 }
 
 } // namespace cpptok

@@ -152,6 +152,8 @@ public:
     //perhaps it would be better to have two tokens for
     //multiline comments : an opening token and a  closing one
     MultiLineComment,
+    Preproc,
+    Include,
     //alias
     Ampersand = BitwiseAnd,
     Ref = Ampersand,

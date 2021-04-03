@@ -62,6 +62,8 @@ public:
   static CharacterType ctype(char c);
   inline static bool isLetter(char c) { return ctype(c) == Letter; }
   inline static bool isDigit(char c) { return ctype(c) == Digit; }
+  inline static bool isIdentifier(char c) { return isLetter(c) || c == '_'; }
+  inline static bool isIdentifierOrDigit(char c) { return isIdentifier(c) || isDigit(c); }
   inline static bool isBinary(char c) { return c == '0' || c == '1'; }
   inline static bool isOctal(char c) { return '0' <= c && c <= '7'; }
   inline static bool isDecimal(char c) { return isDigit(c); }
@@ -70,8 +72,9 @@ public:
   inline static bool isSpace(char c) { return ctype(c) == Space; }
 
 protected:
-  Token read();
-  Token readToken();
+  void read();
+  void write(const Token& tok);
+  void write(TokenType type);
   bool atEnd() const;
   size_t pos() const;
   char readChar();
@@ -81,25 +84,24 @@ protected:
   inline char peekChar() const { return currentChar(); }
   void consumeDiscardable();
   string_view currentText() const;
-  Token create(size_t pos, size_t length, TokenType type);
-  Token create(size_t pos, TokenType type);
-  Token readNumericLiteral();
-  Token readHexa();
-  Token readOctal();
-  Token readBinary();
-  Token readDecimal();
-  Token readIdentifier();
+  void readNumericLiteral();
+  void readHexa();
+  void readOctal();
+  void readBinary();
+  void readDecimal();
+  void readIdentifier();
   TokenType identifierType(size_t begin, size_t end) const;
-  Token readStringLiteral();
-  Token readCharLiteral();
+  void readStringLiteral();
+  void readCharLiteral();
   TokenType getOperator(size_t begin, size_t end) const;
-  Token readOperator();
-  Token readColonOrColonColon(size_t pos);
-  Token readFromPunctuator(size_t pos);
-  Token readSingleLineComment(size_t pos);
-  Token createLongComment();
-  Token readMultiLineComment();
+  void readOperator();
+  void readColonOrColonColon();
+  void readFromPunctuator(char p);
+  void readSingleLineComment();
+  void createLongComment();
+  void readMultiLineComment();
   bool tryReadLiteralSuffix();
+  void readPreprocessor();
 
 private:
   const char* m_chars = nullptr;

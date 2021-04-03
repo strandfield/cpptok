@@ -78,3 +78,23 @@ TEST_CASE("Tokenize multiline comment", "[cpptok]")
   REQUIRE(lexer.output[3].text() == "/* bar ");
   REQUIRE(lexer.output[4].text() == " baz */");
 }
+
+TEST_CASE("Tokenize preprocessor directive", "[cpptok]")
+{
+  cpptok::Tokenizer lexer;
+  lexer.tokenize("#define FOO");
+
+  REQUIRE(lexer.output.size() == 2);
+  REQUIRE(lexer.output[0].type() == cpptok::TokenType::Preproc);
+  REQUIRE(lexer.output[0].text() == "#define");
+  REQUIRE(lexer.output[1].text() == "FOO");
+
+  lexer.output.clear();
+
+  lexer.tokenize("#include <vector>");
+
+  REQUIRE(lexer.output.size() == 2);
+  REQUIRE(lexer.output[0].text() == "#include");
+  REQUIRE(lexer.output[1].type() == cpptok::TokenType::Include);
+  REQUIRE(lexer.output[1].text() == "<vector>");
+}
