@@ -9,21 +9,64 @@
 
 #include <vector>
 
+/*!
+ * \namespace cpptok
+ */
+
 namespace cpptok
 {
+
+/*!
+ * \class Tokenizer
+ * \brief produces token from an input string
+ * 
+ * The Tokenizer is a line-based tokenizer.
+ * That is, it is able to produce tokens for one line of input at a time and maintains 
+ * a state to produce the correct output for multi-line constructs (currently that means 
+ * multi-line comments).
+ * 
+ * The tokenize() methods provide tokenization for a variety of inputs, but ultimately 
+ * an array of char* is used.
+ * 
+ * The output tokens are written in the \c output member of the class.
+ */
 
 class CPPTOK_API Tokenizer
 {
 public:
 
+  /*!
+   * \enum State
+   * \brief describes the state of the tokenizer
+   */
   enum State
   {
+    /*!
+     * \value Default
+     * \brief the default state
+     */
     Default,
+    /*!
+     * \value LongComment
+     * \brief the state indicating a multi-line comment
+     */
     LongComment,
   };
+  /*!
+   * \endenum 
+   */
 
 public:
+  /*!
+   * \variable State state
+   * \brief describes the state of the tokenizer
+   */
   State state = State::Default;
+
+  /*!
+   * \variable std::vector<Token> output
+   * \brief the tokenizer output tokens
+   */
   std::vector<Token> output;
 
 public:
@@ -32,6 +75,8 @@ public:
   void tokenize(const std::string& str);
   void tokenize(const char* str);
   void tokenize(const char* str, size_t len);
+
+  void reset();
 
   enum CharacterType {
     Invalid,
@@ -109,6 +154,14 @@ private:
   size_t m_pos = 0;
   size_t m_start = 0;
 };
+
+/*!
+ * \endclass
+ */
+
+/*!
+ * \endnamespace
+ */
 
 } // namespace cpptok
 

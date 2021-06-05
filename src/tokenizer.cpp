@@ -9,8 +9,16 @@
 #include <memory>
 #include <stdexcept>
 
+/*!
+ * \namespace cpptok
+ */
+
 namespace cpptok
 {
+
+/*!
+ * \class Tokenizer
+ */
 
 /*!
  * \fn void tokenize(const std::string& str)
@@ -50,6 +58,19 @@ void Tokenizer::tokenize(const char* str, size_t len)
 
   while (!atEnd())
     read();
+}
+
+/*!
+ * \fn void reset()
+ * \brief resets the tokenizer
+ * 
+ * Puts the tokenizer back in its default state and clears the output
+ * vector.
+ */
+void Tokenizer::reset()
+{
+  state = State::Default;
+  output.clear();
 }
 
 void Tokenizer::read()
@@ -845,5 +866,13 @@ void Tokenizer::readMultiLineComment()
   state = State::Default;
   return write(TokenType::MultiLineComment);
 }
+
+/*!
+ * \endclass
+ */
+
+/*!
+ * \endnamespace
+ */
 
 } // namespace cpptok
