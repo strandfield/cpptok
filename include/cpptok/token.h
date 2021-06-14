@@ -46,239 +46,126 @@ public:
    */
   enum Value
   {
-    /*! \value Invalid */
     Invalid = 0,
     // literals 
-    /*! \value IntegerLiteral */
     IntegerLiteral = TokenCategory::Literal | 1, 
-    /*! \value DecimalLiteral */
     DecimalLiteral, 
-    /*! \value BinaryLiteral */
     BinaryLiteral, 
-    /*! \value OctalLiteral */
     OctalLiteral, 
-    /*! \value HexadecimalLiteral */
     HexadecimalLiteral, 
     // do we need to create a CharLiteral ?
-    /*! \value StringLiteral */
     StringLiteral,
     // punctuators 
-    /*! \value LeftPar */
     LeftPar = TokenCategory::Punctuator | 7,
-    /*! \value RightPar */
     RightPar,
-    /*! \value LeftBracket */
     LeftBracket,
-    /*! \value RightBracket */
     RightBracket,
-    /*! \value LeftBrace */
     LeftBrace,
-    /*! \value RightBrace */
     RightBrace,
-    /*! \value Semicolon */
     Semicolon,
-    /*! \value Colon */
     Colon,
-    /*! \value Dot */
     Dot,
-    /*! \value QuestionMark */
     QuestionMark,
-    /*! \value SlashSlash */
     SlashSlash,
-    /*! \value SlashStar */
     SlashStar,
-    /*! \value StarSlash */
     StarSlash,
     // keywords 
-    /*! \value Auto */
     Auto = TokenCategory::Keyword | 20,
-    /*! \value Bool */
     Bool,
-    /*! \value Break */
     Break,
-    /*! \value Case */
     Case,
-    /*! \value Catch */
     Catch,
-    /*! \value Char */
     Char,
-    /*! \value Class */
     Class,
-    /*! \value Const */
     Const,
-    /*! \value Constexpr */
     Constexpr,
-    /*! \value Continue */
     Continue,
-    /*! \value Default */
     Default,
-    /*! \value Delete */
     Delete,
-    /*! \value Do */
     Do,
-    /*! \value Double */
     Double,
-    /*! \value Else */
     Else,
-    /*! \value Enum */
     Enum,
-    /*! \value Explicit */
     Explicit,
-    /*! \value Export */
     Export,
-    /*! \value False */
     False,
-    /*! \value Final */
     Final,
-    /*! \value Float */
     Float,
-    /*! \value For */
     For,
-    /*! \value Friend */
     Friend,
-    /*! \value If */
     If,
-    /*! \value Import */
     Import,
-    /*! \value Inline */
     Inline,
-    /*! \value Int */
     Int,
-    /*! \value Mutable */
     Mutable,
-    /*! \value Namespace */
     Namespace,
-    /*! \value Noexcept */
     Noexcept,
-    /*! \value Operator */
     Operator,
-    /*! \value Override */
     Override,
-    /*! \value Private */
     Private,
-    /*! \value Protected */
     Protected,
-    /*! \value Public */
     Public,
-    /*! \value Return */
     Return,
-    /*! \value Static */
     Static,
-    /*! \value Struct */
     Struct,
-    /*! \value Template */
     Template,
-    /*! \value This */
     This,
-    /*! \value Throw */
     Throw,
-    /*! \value True */
     True,
-    /*! \value Try */
     Try,
-    /*! \value Typedef */
     Typedef,
-    /*! \value Typeid */
     Typeid,
-    /*! \value Typename */
     Typename,
-    /*! \value Using */
     Using,
-    /*! \value Virtual */
     Virtual,
-    /*! \value Void */
     Void,
-    /*! \value While */
     While,
     //Operators
-    /*! \value ScopeResolution */
     ScopeResolution = TokenCategory::OperatorToken | 68,
-    /*! \value PlusPlus */
     PlusPlus,
-    /*! \value MinusMinus */
     MinusMinus,
-    /*! \value Plus */
     Plus,
-    /*! \value Minus */
     Minus,
-    /*! \value LogicalNot */
     LogicalNot,
-    /*! \value BitwiseNot */
     BitwiseNot,
-    /*! \value Mul */
     Mul,
-    /*! \value Div */
     Div,
-    /*! \value Remainder */
     Remainder,
-    /*! \value LeftShift */
     LeftShift,
-    /*! \value RightShift */
     RightShift,
-    /*! \value Less */
     Less,
-    /*! \value GreaterThan */
     GreaterThan,
-    /*! \value LessEqual */
     LessEqual,
-    /*! \value GreaterThanEqual */
     GreaterThanEqual,
-    /*! \value EqEq */
     EqEq,
-    /*! \value Neq */
     Neq,
-    /*! \value BitwiseAnd */
     BitwiseAnd,
-    /*! \value BitwiseOr */
     BitwiseOr,
-    /*! \value BitwiseXor */
     BitwiseXor,
-    /*! \value LogicalAnd */
     LogicalAnd,
-    /*! \value LogicalOr */
     LogicalOr,
-    /*! \value Eq */
     Eq,
-    /*! \value MulEq */
     MulEq,
-    /*! \value DivEq */
     DivEq,
-    /*! \value AddEq */
     AddEq,
-    /*! \value SubEq */
     SubEq,
-    /*! \value RemainderEq */
     RemainderEq,
-    /*! \value LeftShiftEq */
     LeftShiftEq,
-    /*! \value RightShiftEq */
     RightShiftEq,
-    /*! \value BitAndEq */
     BitAndEq,
-    /*! \value BitOrEq */
     BitOrEq,
-    /*! \value BitXorEq */
     BitXorEq,
-    /*! \value Comma */
     Comma,
     // Misc
-    /*! \value UserDefinedName */
     UserDefinedName = TokenCategory::Identifier | 103,
-    /*! \value UserDefinedLiteral */
     UserDefinedLiteral = TokenCategory::Literal | 104,
-    /*! \value SingleLineComment */
     SingleLineComment = 102,
-    /*! \value LeftRightPar */
     LeftRightPar,
-    /*! \value LeftRightBracket */
     LeftRightBracket,
     //perhaps it would be better to have two tokens for
     //multiline comments : an opening token and a  closing one
-    /*! \value MultiLineComment */
     MultiLineComment,
-    /*! \value Preproc */
     Preproc,
-    /*! \value Include */
     Include,
     //alias
     Ampersand = BitwiseAnd,
@@ -336,7 +223,7 @@ inline bool operator!=(const TokenType& lhs, const TokenType& rhs)
  * \class Token
  * \brief represents a token
  * 
- * Each token has a c{type()} and a \c{text()}.
+ * Each token has a \c{type()} and a \c{text()}.
  * 
  * Note that the token's text is stored as a string_view. 
  * This makes tokens cheap to copy but requires that the string 
@@ -367,6 +254,7 @@ public:
   bool isIdentifier() const;
   bool isKeyword() const;
   bool isLiteral() const;
+  bool isComment() const;
 
   bool operator==(const Token& other) const { return type_ == other.type_ && other.str_ == str_; }
   bool operator!=(const Token & other) const { return !operator==(other); }
@@ -476,6 +364,16 @@ inline bool Token::isKeyword() const
 inline bool Token::isLiteral() const 
 { 
   return type_.value() & TokenCategory::Literal; 
+}
+
+/*!
+ * \fn bool isComment() const
+ * \brief returns whether the token is a comment
+ */
+inline bool Token::isComment() const
+{
+  return type() == TokenType::SingleLineComment
+    || type() == TokenType::MultiLineComment;
 }
 
 /*!
