@@ -566,8 +566,10 @@ const Keyword l6k[] = {
   { "inline", TokenType::Inline },
   { "public", TokenType::Public },
   { "return", TokenType::Return },
+  { "sizeof", TokenType::Sizeof },
   { "static", TokenType::Static },
   { "struct", TokenType::Struct },
+  { "switch", TokenType::Switch },
   { "typeid", TokenType::Typeid },
 };
 
