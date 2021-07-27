@@ -576,6 +576,7 @@ const Keyword l6k[] = {
 const Keyword l7k[] = {
   { "default", TokenType::Default },
   { "mutable", TokenType::Mutable },
+  { "nullptr", TokenType::Nullptr },
   { "private", TokenType::Private },
   { "typedef", TokenType::Typedef },
   { "virtual", TokenType::Virtual },

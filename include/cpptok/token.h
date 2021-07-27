@@ -100,6 +100,7 @@ public:
     Mutable,
     Namespace,
     Noexcept,
+    Nullptr,
     Operator,
     Override,
     Private,
@@ -123,7 +124,7 @@ public:
     Void,
     While,
     //Operators
-    ScopeResolution = TokenCategory::OperatorToken | 70,
+    ScopeResolution = TokenCategory::OperatorToken | 71,
     PlusPlus,
     MinusMinus,
     Plus,
@@ -159,8 +160,8 @@ public:
     BitXorEq,
     Comma,
     // Misc
-    UserDefinedName = TokenCategory::Identifier | 105,
-    UserDefinedLiteral = TokenCategory::Literal | 106,
+    UserDefinedName = TokenCategory::Identifier | 106,
+    UserDefinedLiteral = TokenCategory::Literal | 107,
     SingleLineComment = 102,
     LeftRightPar,
     LeftRightBracket,
