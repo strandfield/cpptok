@@ -539,6 +539,7 @@ const Keyword l4k[] = {
   { "char", TokenType::Char },
   { "else", TokenType::Else },
   { "enum", TokenType::Enum },
+  { "goto", TokenType::Goto },
   { "this", TokenType::This },
   { "true", TokenType::True },
   { "void", TokenType::Void },
@@ -584,6 +585,7 @@ const Keyword l7k[] = {
 
 const Keyword l8k[] = {
   { "continue", TokenType::Continue },
+  { "decltype", TokenType::Decltype },
   { "explicit", TokenType::Explicit },
   { "noexcept", TokenType::Noexcept },
   { "operator", TokenType::Operator },
@@ -596,6 +598,26 @@ const Keyword l9k[] = {
   { "constexpr", TokenType::Constexpr },
   { "namespace", TokenType::Namespace },
   { "protected", TokenType::Protected },
+};
+
+const Keyword l10k[] = {
+  { "const_cast", TokenType::ConstCast },
+};
+
+const Keyword l11k[] = {
+  { "static_cast", TokenType::StaticCast },
+};
+
+const Keyword l12k[] = {
+  { "dynamic_cast", TokenType::DynamicCast },
+};
+
+const Keyword l13k[] = {
+  { "static_assert", TokenType::StaticAssert },
+};
+
+const Keyword l16k[] = {
+  { "reinterpret_cast", TokenType::ReinterpretCast },
 };
 
 static TokenType findKeyword(const Keyword * keywords, size_t arraySize, const char *str, size_t length)
@@ -631,6 +653,16 @@ TokenType Tokenizer::identifierType(size_t begin, size_t end) const
     return findKeyword(l8k, sizeof(l8k) / sizeof(Keyword), str, l);
   case 9:
     return findKeyword(l9k, sizeof(l9k) / sizeof(Keyword), str, l);
+  case 10:
+    return findKeyword(l10k, sizeof(l10k) / sizeof(Keyword), str, l);
+  case 11:
+    return findKeyword(l11k, sizeof(l11k) / sizeof(Keyword), str, l);
+  case 12:
+    return findKeyword(l12k, sizeof(l12k) / sizeof(Keyword), str, l);
+  case 13:
+    return findKeyword(l13k, sizeof(l13k) / sizeof(Keyword), str, l);
+  case 16:
+    return findKeyword(l16k, sizeof(l16k) / sizeof(Keyword), str, l);
   default:
     break;
   }

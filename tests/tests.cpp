@@ -17,8 +17,10 @@ TEST_CASE("Tokenize keywords", "[cpptok]")
   lexer.tokenize(" override private protected public return static struct ");
   lexer.tokenize(" template this throw true try typedef typeid typename ");
   lexer.tokenize(" using virtual void while ");
+  lexer.tokenize(" goto decltype const_cast static_cast dynamic_cast reinterpret_cast ");
+  lexer.tokenize(" static_assert ");
 
-  REQUIRE(lexer.output.size() == 50);
+  REQUIRE(lexer.output.size() == 57);
 
   for (const cpptok::Token& tok : lexer.output)
   {
