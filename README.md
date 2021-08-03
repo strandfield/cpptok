@@ -3,6 +3,9 @@
 
 This is `cpptok`, a fast and easy to use line tokenizer for C++.
 
+Read the documentation [here](https://strandfield.github.io/cpptok-docs/) or 
+[browse the source code](https://strandfield.github.io/cpptok-nav/).
+
 ## Getting started
 
 ### Build
