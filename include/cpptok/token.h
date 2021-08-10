@@ -260,6 +260,7 @@ public:
 
   std::string to_string() const;
 
+  bool isPunctuator() const;
   bool isOperator() const;
   bool isIdentifier() const;
   bool isKeyword() const;
@@ -341,12 +342,21 @@ inline std::string Token::to_string() const
 }
 
 /*!
+ * \fn bool isPunctuator() const
+ * \brief returns whether the token is a punctuator
+ */
+inline bool Token::isPunctuator() const
+{
+  return type_.value() & TokenCategory::Punctuator;
+}
+
+/*!
  * \fn bool isOperator() const 
  * \brief returns whether the token is an operator
  */
 inline bool Token::isOperator() const 
 { 
-  return type_.value() & TokenCategory::OperatorToken; 
+  return type_.value() & TokenCategory::OperatorToken;
 }
 
 /*!
