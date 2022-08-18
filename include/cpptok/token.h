@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Vincent Chambrin
+// Copyright (C) 2021-2022 Vincent Chambrin
 // This file is part of the 'cpptok' project
 // For conditions of distribution and use, see copyright notice in LICENSE
 
@@ -91,6 +91,7 @@ public:
     Enum,
     Explicit,
     Export,
+    Extern,
     False,
     Final,
     Float,
@@ -101,6 +102,7 @@ public:
     Import,
     Inline,
     Int,
+    Long,
     Mutable,
     Namespace,
     Noexcept,
@@ -126,12 +128,13 @@ public:
     Typedef,
     Typeid,
     Typename,
+    Unsigned,
     Using,
     Virtual,
     Void,
     While,
     //Operators
-    ScopeResolution = TokenCategory::OperatorToken | 78,
+    ScopeResolution = TokenCategory::OperatorToken | 81,
     PlusPlus,
     MinusMinus,
     Plus,
@@ -167,8 +170,8 @@ public:
     BitXorEq,
     Comma,
     // Misc
-    UserDefinedName = TokenCategory::Identifier | 113,
-    UserDefinedLiteral = TokenCategory::Literal | 114,
+    UserDefinedName = TokenCategory::Identifier | 116,
+    UserDefinedLiteral = TokenCategory::Literal | 117,
     SingleLineComment = 102,
     LeftRightPar,
     LeftRightBracket,

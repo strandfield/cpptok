@@ -1,4 +1,4 @@
-// Copyright (C) 2021 Vincent Chambrin
+// Copyright (C) 2021-2022 Vincent Chambrin
 // This file is part of the 'cpptok' project
 // For conditions of distribution and use, see copyright notice in LICENSE
 
@@ -540,6 +540,7 @@ const Keyword l4k[] = {
   { "else", TokenType::Else },
   { "enum", TokenType::Enum },
   { "goto", TokenType::Goto },
+  { "long", TokenType::Long },
   { "this", TokenType::This },
   { "true", TokenType::True },
   { "void", TokenType::Void },
@@ -562,6 +563,7 @@ const Keyword l6k[] = {
   { "delete", TokenType::Delete },
   { "double", TokenType::Double },
   { "export", TokenType::Export },
+  { "extern", TokenType::Extern },
   { "friend", TokenType::Friend },
   { "import", TokenType::Import },
   { "inline", TokenType::Inline },
@@ -592,6 +594,7 @@ const Keyword l8k[] = {
   { "override", TokenType::Override },
   { "template", TokenType::Template },
   { "typename", TokenType::Typename },
+  { "unsigned", TokenType::Unsigned },
 };
 
 const Keyword l9k[] = {
